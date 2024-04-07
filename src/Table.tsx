@@ -13,7 +13,6 @@ export type TableProps = {
 
 export const Table = () => {
   const data = location.hash.slice(1);
-  console.log(decodeURI(data));
   const { columns, rows } = JSON.parse(atob(decodeURI(data))) as TableProps;
 
   return (
