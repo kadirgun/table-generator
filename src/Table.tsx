@@ -1,22 +1,28 @@
-import { Table as MantineTable, MantineProvider } from "@mantine/core";
+import { Table as MantineTable, MantineProvider, Text } from "@mantine/core";
 import styles from "@mantine/core/styles.css?inline";
+import type { HTMLAttributeAnchorTarget } from "react";
 
 export type Record = {
   color?: string;
   value: number | string;
+  link?: {
+    href: string;
+    target: HTMLAttributeAnchorTarget;
+  };
 };
 
 export type TableProps = {
   columns: string[];
   rows: Record[][];
+  theme?: "light" | "dark";
 };
 
 export const Table = () => {
   const data = location.hash.slice(1);
-  const { columns, rows } = JSON.parse(atob(decodeURI(data))) as TableProps;
+  const { columns, rows, theme } = JSON.parse(atob(decodeURI(data))) as TableProps;
 
   return (
-    <MantineProvider forceColorScheme="dark">
+    <MantineProvider forceColorScheme={theme || "dark"}>
       <style>{styles}</style>
       <MantineTable striped>
         <MantineTable.Thead>
@@ -32,7 +38,13 @@ export const Table = () => {
             <MantineTable.Tr key={index}>
               {row.map((record, index) => (
                 <MantineTable.Td key={index} style={{ color: record.color || "white" }}>
-                  {record.value}
+                  {record.link ? (
+                    <Text size="sm" fw={700} component="a" href={record.link.href} target={record.link.target}>
+                      {record.value}
+                    </Text>
+                  ) : (
+                    record.value
+                  )}
                 </MantineTable.Td>
               ))}
             </MantineTable.Tr>
